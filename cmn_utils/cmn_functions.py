@@ -38,4 +38,19 @@ def create_mnt_point(storage_acc_name, container_name):
 
 # COMMAND ----------
 
+from pyspark.sql.types import StructType,StructField,StringType,\
+    IntegerType,FloatType,DateType
+from datetime import datetime,date
+from pyspark.sql.functions import col,lit,current_timestamp,current_date
 
+# COMMAND ----------
+
+def add_ingestion_date(data_frame):
+    data_frame = data_frame.withColumn('ingestion_date',current_date())
+    return data_frame
+
+# COMMAND ----------
+
+def write_file(data_frame,container_name,file_name):
+    data_frame.write.mode('overwrite').parquet(f'/mnt/saf1racing/{container_name}/{file_name}.parquet')
+    return data_frame
