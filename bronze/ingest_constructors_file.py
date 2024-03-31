@@ -45,4 +45,4 @@ df = write_file(df,container_name,file_name)
 
 # COMMAND ----------
 
-df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}.parquet',header=True).display(Truncate=False)
+df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}/',header=True).display(Truncate=False)

@@ -50,20 +50,7 @@ df = write_file(df,container_name,file_name)
 
 # COMMAND ----------
 
-dbutils.fs.help()
-
-# COMMAND ----------
-
-dbutils.fs.refreshMounts()
-
-# COMMAND ----------
-
-df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}.parquet',header=True).display()
-
-# COMMAND ----------
-
-# dbutils.fs.ls('/mnt/saf1racing/silver')
-# dbutils.fs.rm('/mnt/saf1racing/silver/circuits.parquet',recurse=True)
+df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}/',header=True).display()
 
 # COMMAND ----------
 

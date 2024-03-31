@@ -50,5 +50,5 @@ df = write_file(df,container_name,folder_name)
 
 # COMMAND ----------
 
-df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{folder_name}.parquet',header=True)
+df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{folder_name}/',header=True)
 display(df.limit(4))
