@@ -22,6 +22,11 @@ create table if not exists f1_racing_project.circuits
 -- COMMAND ----------
 
 select * from f1_racing_project.circuits;
+desc extended f1_racing_project.circuits;
+
+-- COMMAND ----------
+
+select * from f1_racing_project.circuits;
 
 -- COMMAND ----------
 
