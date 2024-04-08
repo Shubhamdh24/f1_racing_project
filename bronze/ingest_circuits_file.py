@@ -48,8 +48,12 @@ df = add_ingestion_date(df)
 
 # COMMAND ----------
 
+df.display()
+
+# COMMAND ----------
+
 df = write_file(df,container_name,file_name)
 
 # COMMAND ----------
 
-df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}.parquet',header=True).display()
+df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}/',header=True).display()

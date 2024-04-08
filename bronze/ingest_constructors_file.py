@@ -10,13 +10,10 @@ container_name = dbutils.widgets.get('container_name')
 
 # COMMAND ----------
 
-input_schema = StructType([StructField('raceId',IntegerType()),
-                     StructField('year',IntegerType()),
-                     StructField('round',IntegerType()),
-                     StructField('circuitId',IntegerType()),
+input_schema = StructType([StructField('constructorId',IntegerType()),
+                     StructField('constructorRef',StringType()),
                      StructField('name',StringType()),
-                     StructField('date',DateType()),
-                     StructField('time',StringType()),
+                     StructField('nationality',StringType()),
                      StructField('url',StringType())
 ]
                     )
@@ -24,16 +21,17 @@ input_schema = StructType([StructField('raceId',IntegerType()),
 # COMMAND ----------
 
 
-df = spark.read.csv(f'/mnt/saf1racing/bronze/{file_name}.csv',header='true',schema=input_schema)
+df = spark.read.json(f'/mnt/saf1racing/bronze/{file_name}.json',schema=input_schema)
 
 # COMMAND ----------
 
 df = df.withColumnsRenamed(
     colsMap={
-        "raceId": "race_id",
-        "circuitId": "circuit_id",
-        "race_name": "circuit_name",
-        'url':'race_url'
+        "constructorId": "constructor_id",
+        "constructorRef": "constructor_ref",
+        "name": "constructor_name",
+        "nationality": "constructor_nationality",
+        'url':'constructor_url'
     }
 )
 
@@ -47,4 +45,4 @@ df = write_file(df,container_name,file_name)
 
 # COMMAND ----------
 
-df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}/',header=True).display()
+df = spark.read.parquet(f'/mnt/saf1racing/{container_name}/{file_name}/',header=True).display(Truncate=False)
