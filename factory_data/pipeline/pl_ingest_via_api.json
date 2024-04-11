@@ -53,11 +53,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"ds_param_file_name": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+								"value": "@concat('seasons','.json')",
 								"type": "Expression"
 							},
 							"ds_param_directory_path": {
-								"value": "@concat(concat('saf1racing/','bronze/'),variables('file_name'))",
+								"value": "@concat(concat(concat('bronze/',variables('file_name')),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
 								"type": "Expression"
 							}
 						}
@@ -100,11 +100,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"ds_param_file_name": {
-								"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
+								"value": "@concat('seasons','.json')",
 								"type": "Expression"
 							},
 							"ds_param_directory_path": {
-								"value": "@concat(concat('saf1racing/','bronze/'),variables('file_name'))",
+								"value": "@concat(concat(concat('bronze/',variables('file_name')),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
 								"type": "Expression"
 							}
 						}
@@ -126,7 +126,7 @@
 				"userProperties": [],
 				"typeProperties": {
 					"items": {
-						"value": "@activity('act_look_up_on_seasons').output.Value[0].MRData.SeasonTable.Seasons",
+						"value": "@activity('act_look_up_on_seasons').output.value[0].MRData.SeasonTable.Seasons",
 						"type": "Expression"
 					},
 					"isSequential": true,
@@ -170,7 +170,7 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_param_file_name": {
-											"value": "@item()",
+											"value": "@item().season",
 											"type": "Expression"
 										}
 									}
@@ -182,16 +182,45 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_param_file_name": {
-											"value": "@concat(concat('race_',item()),'.json')",
+											"value": "@concat(concat('race_',item().season),'.json')",
 											"type": "Expression"
 										},
 										"ds_param_directory_path": {
-											"value": "@concat('saf1racing/','bronze/')",
+											"value": "@concat('bronze/races/',formatDateTime(utcnow(),'yyyy-MM-dd'))",
 											"type": "Expression"
 										}
 									}
 								}
 							]
+						},
+						{
+							"name": "act_execute_child_results_pl",
+							"type": "ExecutePipeline",
+							"dependsOn": [
+								{
+									"activity": "act_cpy_race_data",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"pipeline": {
+									"referenceName": "pl_child_results",
+									"type": "PipelineReference"
+								},
+								"waitOnCompletion": true,
+								"parameters": {
+									"season_year": {
+										"value": "@item().season",
+										"type": "Expression"
+									}
+								}
+							}
 						}
 					]
 				}

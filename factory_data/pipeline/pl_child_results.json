@@ -1,0 +1,139 @@
+{
+	"name": "pl_child_results",
+	"properties": {
+		"activities": [
+			{
+				"name": "act_for_each_season_round",
+				"type": "ForEach",
+				"dependsOn": [
+					{
+						"activity": "act_look_up_races",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"items": {
+						"value": "@activity('act_look_up_races').output.value[0].MRData.RaceTable.Races",
+						"type": "Expression"
+					},
+					"isSequential": true,
+					"activities": [
+						{
+							"name": "act_cpy_round_result",
+							"type": "Copy",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_api_seasons",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_param_file_name": {
+											"value": "@concat(concat(concat(pipeline().parameters.season_year,'/'),item().round),'/results')\n\n",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_sink_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_param_file_name": {
+											"value": "@concat(concat('round_',item().round),'.json')",
+											"type": "Expression"
+										},
+										"ds_param_directory_path": {
+											"value": "@concat(concat(concat('bronze/results/',pipeline().parameters.season_year),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))\n\n",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						}
+					]
+				}
+			},
+			{
+				"name": "act_look_up_races",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_sink_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_param_file_name": {
+								"value": "@concat(concat('race_',pipeline().parameters.season_year),'.json')",
+								"type": "Expression"
+							},
+							"ds_param_directory_path": {
+								"value": "@concat('bronze/races/',formatDateTime(utcnow(),'yyyy-MM-dd'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"season_year": {
+				"type": "string",
+				"defaultValue": "1950"
+			}
+		},
+		"annotations": []
+	}
+}
