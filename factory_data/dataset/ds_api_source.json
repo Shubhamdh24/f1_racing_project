@@ -1,5 +1,5 @@
 {
-	"name": "ds_api_seasons",
+	"name": "ds_api_source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_rest_api",
