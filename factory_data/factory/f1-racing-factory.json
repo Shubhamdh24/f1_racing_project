@@ -1,0 +1,9 @@
+{
+	"name": "f1-racing-factory",
+	"location": "uksouth",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "ee383303-e783-4028-81f5-78a8cca3b9d6",
+		"tenantId": "f32b7e1b-a021-4d74-90a1-6551d6d47467"
+	}
+}
