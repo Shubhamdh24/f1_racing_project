@@ -118,11 +118,6 @@
 				"type": "string"
 			}
 		},
-		"variables": {
-			"file_name": {
-				"type": "String"
-			}
-		},
 		"annotations": []
 	}
 }
