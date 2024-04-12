@@ -72,11 +72,11 @@
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_param_file_name": {
-											"value": "@concat(concat('round_',item().round),'.json')",
+											"value": "@concat(concat(concat(pipeline().parameters.season_year,'_round_'),item().round),'.json')",
 											"type": "Expression"
 										},
 										"ds_param_directory_path": {
-											"value": "@concat(concat(concat('bronze/results/',pipeline().parameters.season_year),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))\n\n",
+											"value": "@concat('bronze/results/',formatDateTime(utcnow(),'yyyy-MM-dd'))\n\n",
 											"type": "Expression"
 										}
 									}

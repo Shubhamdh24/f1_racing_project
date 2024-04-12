@@ -226,7 +226,6 @@
 				}
 			}
 		],
-		"concurrency": 5,
 		"parameters": {
 			"pl_param_file_name": {
 				"type": "string"
