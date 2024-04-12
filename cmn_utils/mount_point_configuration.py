@@ -19,6 +19,10 @@ create_mnt_point("saf1racing", "gold")
 
 # COMMAND ----------
 
+create_mnt_point("saf1racing", "formulaoneproject")
+
+# COMMAND ----------
+
 # unmount_method('saf1racing','bronze')
 # unmount_method('saf1racing','silver')
 # unmount_method('saf1racing','gold')

@@ -37,11 +37,11 @@
 				},
 				"inputs": [
 					{
-						"referenceName": "ds_api_seasons",
+						"referenceName": "ds_api_source",
 						"type": "DatasetReference",
 						"parameters": {
 							"ds_param_file_name": {
-								"value": "@variables('file_name')",
+								"value": "@pipeline().parameters.pl_param_file_name",
 								"type": "Expression"
 							}
 						}
@@ -53,11 +53,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"ds_param_file_name": {
-								"value": "@concat('seasons','.json')",
+								"value": "@concat(pipeline().parameters.pl_param_file_name,'.json')",
 								"type": "Expression"
 							},
 							"ds_param_directory_path": {
-								"value": "@concat(concat(concat('bronze/',variables('file_name')),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
+								"value": "@concat(concat(concat('bronze/',pipeline().parameters.pl_param_file_name),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
 								"type": "Expression"
 							}
 						}
@@ -100,11 +100,11 @@
 						"type": "DatasetReference",
 						"parameters": {
 							"ds_param_file_name": {
-								"value": "@concat('seasons','.json')",
+								"value": "@concat(pipeline().parameters.pl_param_file_name,'.json')",
 								"type": "Expression"
 							},
 							"ds_param_directory_path": {
-								"value": "@concat(concat(concat('bronze/',variables('file_name')),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
+								"value": "@concat(concat(concat('bronze/',pipeline().parameters.pl_param_file_name),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
 								"type": "Expression"
 							}
 						}
@@ -166,7 +166,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_api_seasons",
+									"referenceName": "ds_api_source",
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_param_file_name": {
@@ -226,10 +226,10 @@
 				}
 			}
 		],
-		"variables": {
-			"file_name": {
-				"type": "String",
-				"defaultValue": "seasons"
+		"concurrency": 5,
+		"parameters": {
+			"pl_param_file_name": {
+				"type": "string"
 			}
 		},
 		"annotations": []

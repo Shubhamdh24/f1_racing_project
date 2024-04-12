@@ -56,7 +56,7 @@
 							},
 							"inputs": [
 								{
-									"referenceName": "ds_api_seasons",
+									"referenceName": "ds_api_source",
 									"type": "DatasetReference",
 									"parameters": {
 										"ds_param_file_name": {

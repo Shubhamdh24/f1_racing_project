@@ -1,5 +1,5 @@
 {
-	"name": "ds_api_seasons",
+	"name": "ds_api_source",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "ls_rest_api",
@@ -14,7 +14,7 @@
 		"type": "RestResource",
 		"typeProperties": {
 			"relativeUrl": {
-				"value": "@concat(concat(dataset().ds_param_file_name,'.json'),'?limit=100')",
+				"value": "@concat(concat(dataset().ds_param_file_name,'.json'),'?limit=1000')",
 				"type": "Expression"
 			}
 		},
