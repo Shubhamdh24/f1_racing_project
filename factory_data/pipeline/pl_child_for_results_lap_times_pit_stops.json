@@ -1,5 +1,5 @@
 {
-	"name": "pl_child_results",
+	"name": "pl_child_for_results_lap_times_pit_stops",
 	"properties": {
 		"activities": [
 			{
@@ -24,6 +24,8 @@
 						{
 							"name": "act_cpy_round_result",
 							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [],
 							"policy": {
 								"timeout": "0.12:00:00",
@@ -77,6 +79,146 @@
 										},
 										"ds_param_directory_path": {
 											"value": "@concat('bronze/results/',formatDateTime(utcnow(),'yyyy-MM-dd'))\n\n",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "act_cpy_round_laps",
+							"type": "Copy",
+							"state": "Inactive",
+							"onInactiveMarkAs": "Succeeded",
+							"dependsOn": [
+								{
+									"activity": "act_cpy_round_result",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_api_source",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_param_file_name": {
+											"value": "@concat(concat(concat(pipeline().parameters.season_year,'/'),item().round),'/laps')\n\n",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_sink_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_param_file_name": {
+											"value": "@concat(concat(concat(pipeline().parameters.season_year,'_round_'),item().round),'.json')",
+											"type": "Expression"
+										},
+										"ds_param_directory_path": {
+											"value": "@concat('bronze/lap_times/',formatDateTime(utcnow(),'yyyy-MM-dd'))\n\n",
+											"type": "Expression"
+										}
+									}
+								}
+							]
+						},
+						{
+							"name": "act_cpy_round_pit_stops",
+							"type": "Copy",
+							"dependsOn": [
+								{
+									"activity": "act_cpy_round_laps",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"source": {
+									"type": "RestSource",
+									"httpRequestTimeout": "00:01:40",
+									"requestInterval": "00.00:00:00.010",
+									"requestMethod": "GET",
+									"paginationRules": {
+										"supportRFC5988": "true"
+									}
+								},
+								"sink": {
+									"type": "JsonSink",
+									"storeSettings": {
+										"type": "AzureBlobFSWriteSettings"
+									},
+									"formatSettings": {
+										"type": "JsonWriteSettings"
+									}
+								},
+								"enableStaging": false
+							},
+							"inputs": [
+								{
+									"referenceName": "ds_api_source",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_param_file_name": {
+											"value": "@concat(concat(concat(pipeline().parameters.season_year,'/'),item().round),'/pitstops')\n\n",
+											"type": "Expression"
+										}
+									}
+								}
+							],
+							"outputs": [
+								{
+									"referenceName": "ds_sink_json",
+									"type": "DatasetReference",
+									"parameters": {
+										"ds_param_file_name": {
+											"value": "@concat(concat(concat(pipeline().parameters.season_year,'_round_'),item().round),'.json')",
+											"type": "Expression"
+										},
+										"ds_param_directory_path": {
+											"value": "@concat('bronze/pit_stops/',formatDateTime(utcnow(),'yyyy-MM-dd'))\n\n",
 											"type": "Expression"
 										}
 									}
@@ -139,6 +281,9 @@
 			},
 			"temp": {
 				"type": "Integer"
+			},
+			"start_time": {
+				"type": "String"
 			}
 		},
 		"annotations": []
