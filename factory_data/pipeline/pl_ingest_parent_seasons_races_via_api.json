@@ -1,5 +1,5 @@
 {
-	"name": "pl_ingest_seasons_races_via_api",
+	"name": "pl_ingest_parent_seasons_races_via_api",
 	"properties": {
 		"activities": [
 			{
