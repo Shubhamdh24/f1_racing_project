@@ -1,5 +1,5 @@
 {
-	"name": "pl_ingest_via_api",
+	"name": "pl_ingest_parent_seasons_races_via_api",
 	"properties": {
 		"activities": [
 			{
@@ -210,7 +210,7 @@
 							"userProperties": [],
 							"typeProperties": {
 								"pipeline": {
-									"referenceName": "pl_child_results",
+									"referenceName": "pl_child_for_results_lap_times_pit_stops",
 									"type": "PipelineReference"
 								},
 								"waitOnCompletion": true,
@@ -229,6 +229,17 @@
 		"parameters": {
 			"pl_param_file_name": {
 				"type": "string"
+			}
+		},
+		"variables": {
+			"first_variable": {
+				"type": "Array"
+			},
+			"temp": {
+				"type": "Integer"
+			},
+			"start_time": {
+				"type": "String"
 			}
 		},
 		"annotations": []

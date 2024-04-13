@@ -1,0 +1,134 @@
+{
+	"name": "pl_ingest_constructors_via_api",
+	"properties": {
+		"activities": [
+			{
+				"name": "act_cpy_constructors",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
+					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_api_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_param_file_name": {
+								"value": "@pipeline().parameters.pl_param_file_name",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_sink_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_param_file_name": {
+								"value": "@concat(pipeline().parameters.pl_param_file_name,'.json')",
+								"type": "Expression"
+							},
+							"ds_param_directory_path": {
+								"value": "@concat(concat(concat('bronze/',pipeline().parameters.pl_param_file_name),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
+								"type": "Expression"
+							}
+						}
+					}
+				]
+			},
+			{
+				"name": "act_look_up_on_seasons",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "act_cpy_constructors",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "JsonSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "JsonReadSettings"
+						}
+					},
+					"dataset": {
+						"referenceName": "ds_sink_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_param_file_name": {
+								"value": "@concat(pipeline().parameters.pl_param_file_name,'.json')",
+								"type": "Expression"
+							},
+							"ds_param_directory_path": {
+								"value": "@concat(concat(concat('bronze/',pipeline().parameters.pl_param_file_name),'/'),formatDateTime(utcnow(),'yyyy-MM-dd'))",
+								"type": "Expression"
+							}
+						}
+					},
+					"firstRowOnly": false
+				}
+			}
+		],
+		"parameters": {
+			"pl_param_file_name": {
+				"type": "string"
+			}
+		},
+		"variables": {
+			"first_variable": {
+				"type": "Array"
+			},
+			"temp": {
+				"type": "Integer"
+			},
+			"start_time": {
+				"type": "String"
+			}
+		},
+		"annotations": []
+	}
+}
