@@ -3,33 +3,9 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "act_set_strt_time",
-				"type": "SetVariable",
+				"name": "Copy data1",
+				"type": "Copy",
 				"dependsOn": [],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "start_time",
-					"value": {
-						"value": "@formatDateTime(utcnow(),'yyyy-MM-dd')",
-						"type": "Expression"
-					}
-				}
-			},
-			{
-				"name": "act_lookup_to_insrt_recrd",
-				"type": "Lookup",
-				"dependsOn": [
-					{
-						"activity": "act_set_strt_time",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -40,16 +16,53 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "AzurePostgreSqlSource",
-						"query": "select * from postgres.f1_audit_log",
-						"partitionOption": "None"
+						"type": "RestSource",
+						"httpRequestTimeout": "00:01:40",
+						"requestInterval": "00.00:00:00.010",
+						"requestMethod": "GET",
+						"paginationRules": {
+							"supportRFC5988": "true"
+						}
 					},
-					"dataset": {
-						"referenceName": "ds_postgres",
-						"type": "DatasetReference"
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
 					},
-					"firstRowOnly": false
-				}
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ds_api_source",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_param_file_name": {
+								"value": "@string('1996/1/laps')",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "ds_sink_json",
+						"type": "DatasetReference",
+						"parameters": {
+							"ds_param_file_name": {
+								"value": "@string('1996_round_1.json')",
+								"type": "Expression"
+							},
+							"ds_param_directory_path": {
+								"value": "@concat('bronze/lap_times/',formatDateTime(utcnow(),'yyyy-MM-dd'))",
+								"type": "Expression"
+							}
+						}
+					}
+				]
 			}
 		],
 		"variables": {
