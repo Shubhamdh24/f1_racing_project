@@ -14,11 +14,12 @@ input_schema = StructType(
     ]
 )
 
-pit_stops_df = spark.read.option('multiline',True).schema(input_schema).json(f'/mnt/saf1racing/formulaoneproject/bronze/pit_stops/2024-04-11/')
 
-
-pit_stops_df.display()
 
 # COMMAND ----------
 
 
+pit_stops_df = spark.read.option('multiline',True).schema(input_schema).json(f'/mnt/saf1racing/formulaoneproject/bronze/pit_stops/2024-04-11/')
+
+
+pit_stops_df.display()
