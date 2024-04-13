@@ -130,8 +130,15 @@
 		],
 		"parameters": {
 			"season_year": {
-				"type": "string",
-				"defaultValue": "1950"
+				"type": "string"
+			}
+		},
+		"variables": {
+			"first_variable": {
+				"type": "Array"
+			},
+			"temp": {
+				"type": "Integer"
 			}
 		},
 		"annotations": []

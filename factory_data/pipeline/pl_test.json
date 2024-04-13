@@ -1,0 +1,19 @@
+{
+	"name": "pl_test",
+	"properties": {
+		"parameters": {
+			"start": {
+				"type": "int"
+			}
+		},
+		"variables": {
+			"first_variable": {
+				"type": "Array"
+			},
+			"temp": {
+				"type": "Integer"
+			}
+		},
+		"annotations": []
+	}
+}
