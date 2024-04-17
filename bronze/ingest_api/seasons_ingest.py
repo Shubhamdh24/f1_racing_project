@@ -1,12 +1,4 @@
 # Databricks notebook source
-dbutils.fs.mounts()
-
-# COMMAND ----------
-
-dbutils.fs.refreshMounts()
-
-# COMMAND ----------
-
 # create table seasons
 
 from pyspark.sql.functions import col,explode
@@ -19,4 +11,19 @@ seasons_df.display()
 
 # COMMAND ----------
 
+print(seasons_df.columns)
+print(seasons_df.count())
 
+# COMMAND ----------
+
+seasons_df = seasons_df.select('season', 'url').distinct()
+print(seasons_df.count())
+
+# COMMAND ----------
+
+# we retrieve all the columns required for our feature analysis
+# we can directly write the seasons delta table in silver storage account
+
+# COMMAND ----------
+
+seasons_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/seasons')
