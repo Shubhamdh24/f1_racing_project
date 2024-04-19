@@ -41,6 +41,10 @@ race_df.display()
 
 # COMMAND ----------
 
+
+
+# COMMAND ----------
+
 # we retrieve all the columns required for our feature analysis
 # we can directly write the races delta table in silver storage account
 
