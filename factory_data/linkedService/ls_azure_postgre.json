@@ -5,8 +5,8 @@
 		"annotations": [],
 		"type": "AzurePostgreSql",
 		"typeProperties": {
-			"connectionString": "host=f1-racing-project.postgres.database.azure.com;port=5432;database=postgres;uid=postgre_admin;encryptionmethod=1;validateservercertificate=0",
-			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDNDOTRBQTUxLTNEMkQtNDdGQy1BNTI5LTg4Rjc4NThDMjAwQ18wNjJjOTc2YS0xYzE4LTQ1ZGUtYThlMC03ZTZlMWUwYzEwYTMiDQp9"
+			"connectionString": "host=f1-server.postgres.database.azure.com;port=5432;database=postgres;uid=f1_admin;encryptionmethod=1;validateservercertificate=0",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIkRBVEFGQUNUT1JZQDJCQUQwNkZGLTg2MjktNDYyQS04NkNFLTNCQTNDNkZEMzE3Ql80ODk5MjZjOS03ZTM2LTQ2N2MtOWExZi0wNmYzMDg2MThkMmMiDQp9"
 		}
 	}
 }
