@@ -210,13 +210,11 @@
 						{
 							"name": "act_execute_child_results_pl",
 							"type": "ExecutePipeline",
-							"state": "Inactive",
-							"onInactiveMarkAs": "Succeeded",
 							"dependsOn": [
 								{
 									"activity": "act_log_update_completion_races",
 									"dependencyConditions": [
-										"Succeeded"
+										"Completed"
 									]
 								}
 							],
@@ -254,7 +252,7 @@
 								"source": {
 									"type": "AzurePostgreSqlSource",
 									"query": {
-										"value": "insert into public.audit_log (job_name,task_name,status,start_date,end_date) values ('@{concat('races_',item().season)}','copy_act','In Progress','@{convertFromUtc(utcnow(),'India Standard Time')}','@{convertFromUtc(utcnow(),'India Standard Time')}');\n\nselect * from public.audit_log;\n",
+										"value": "insert into public.audit_log (job_name,task_name,status,start_date,end_date) values ('@{concat('race_',item().season)}','copy_act','In Progress','@{convertFromUtc(utcnow(),'India Standard Time')}','@{convertFromUtc(utcnow(),'India Standard Time')}');\n\nselect * from public.audit_log;\n",
 										"type": "Expression"
 									},
 									"partitionOption": "None"
