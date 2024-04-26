@@ -19,7 +19,7 @@ create_mnt_point("saf1racing", "gold")
 
 # COMMAND ----------
 
-create_mnt_point("saf1racing", "formulaoneproject")
+create_mnt_point("saf1racing", "formula-one-project")
 
 # COMMAND ----------
 

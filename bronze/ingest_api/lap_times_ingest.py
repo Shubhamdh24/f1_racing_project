@@ -1,7 +1,6 @@
 # Databricks notebook source
-
 from pyspark.sql.functions import col,explode
-lap_times_df = spark.read.json(path=['/mnt/saf1racing/formulaoneproject/bronze/lap_times/2024-04-14','/mnt/saf1racing/formulaoneproject/bronze/lap_times/2024-04-15'],multiLine=True)
+lap_times_df = spark.read.json(path='/mnt/saf1racing/formula-one-project/bronze/lap_times',multiLine=True,recursiveFileLookup=True)
 lap_times_df = lap_times_df.withColumn('list',explode(col('MRData').RaceTable.Races))
 lap_times_df = lap_times_df.withColumn('list1',explode(col('list').Laps))
 lap_times_df = lap_times_df.withColumn('list2',explode(col('list1').Timings))
@@ -62,4 +61,4 @@ lap_times_df.count()
 # we retrieve all the columns required for our feature analysis
 # we can directly write the lap_times delta table in silver storage account
 
-lap_times_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/lap_times')
+lap_times_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/lap_times')

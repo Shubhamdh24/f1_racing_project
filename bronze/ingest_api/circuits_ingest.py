@@ -3,7 +3,7 @@
 
 from pyspark.sql.functions import col,explode,replace
 
-circuits_df = spark.read.option("multiline", "true").json('/mnt/saf1racing/formulaoneproject/bronze/circuits',recursiveFileLookup=True)
+circuits_df = spark.read.option("multiline", "true").json('/mnt/saf1racing/formula-one-project/bronze/circuits',recursiveFileLookup=True)
 circuits_df = circuits_df.withColumn('lst',explode(col('MRData').CircuitTable.Circuits))
 circuits_df = circuits_df.drop('MRData')
 circuits_df = circuits_df.withColumn('circuit_id',col('lst').circuitId).withColumn('name',col('lst').circuitName)\
@@ -33,7 +33,7 @@ circuits_df.count()
 
 # COMMAND ----------
 
-circuits_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/circuits')
+circuits_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/circuits')
 
 # COMMAND ----------
 

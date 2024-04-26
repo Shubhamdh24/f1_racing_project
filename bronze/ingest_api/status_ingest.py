@@ -3,7 +3,7 @@
 
 from pyspark.sql.functions import col,explode,replace
 
-status_df = spark.read.option("multiline", "true").json('/mnt/saf1racing/formulaoneproject/bronze/status',recursiveFileLookup=True)
+status_df = spark.read.option("multiline", "true").json('/mnt/saf1racing/formula-one-project/bronze/status',recursiveFileLookup=True)
 status_df = status_df.withColumn('lst',explode(col('MRData').StatusTable.Status))
 status_df = status_df.drop('MRData')
 status_df = status_df.withColumn('status_id',col('lst').statusId).withColumn('status',col('lst').status)
@@ -31,7 +31,7 @@ status_df.count()
 
 # COMMAND ----------
 
-status_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/status')
+status_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/status')
 
 # COMMAND ----------
 

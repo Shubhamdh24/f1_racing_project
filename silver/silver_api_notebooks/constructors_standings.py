@@ -1,10 +1,10 @@
 # Databricks notebook source
-results_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/results')
+results_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/results')
 results_df = results_df.select('race_id','driver_id','constructor_id','points','position','position_text')
 
 # COMMAND ----------
 
-races_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/races')
+races_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/races')
 races_df = races_df.select('race_id','year')
 
 # COMMAND ----------
@@ -23,16 +23,16 @@ total_points = results_races_df.groupBy('year','constructor_id').agg(sum('points
 # writing constructors_standing table
 # for bbc standing section those columns required for creation those only took for creation of driver_standing table
 
-total_points.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/gold/constructors_standings')
+total_points.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/gold/constructors_standings')
 
 # COMMAND ----------
 
-constructors_stand_df = spark.read.load('/mnt/saf1racing/formulaoneproject/gold/constructors_standings')
+constructors_stand_df = spark.read.load('/mnt/saf1racing/formula-one-project/gold/constructors_standings')
 
 
 # COMMAND ----------
 
-constructors_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/constructors').select('constructor_id',col('name').alias('Team'))
+constructors_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/constructors').select('constructor_id',col('name').alias('Team'))
 
 # COMMAND ----------
 
@@ -45,7 +45,7 @@ constructors_stand_df.filter(col('year')==2024).select('Team',col('wins').alias(
 
 # writing bbc_constructors_standing table
 
-constructors_stand_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/gold/bbc_constructors_standings')
+constructors_stand_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/gold/bbc_constructors_standings')
 
 
 # COMMAND ----------

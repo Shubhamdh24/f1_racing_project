@@ -1,23 +1,23 @@
 # Databricks notebook source
 from pyspark.sql.functions import concat_ws,col
-drivers = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/drivers')
+drivers = spark.read.load('/mnt/saf1racing/formula-one-project/silver/drivers')
 drivers = drivers.select('driver_id',concat_ws(' ',col('forename'),col('surname')).alias('full name'),'number')
 
 # COMMAND ----------
 
 from pyspark.sql.functions import concat_ws,col
-constructors = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/constructors')
+constructors = spark.read.load('/mnt/saf1racing/formula-one-project/silver/constructors')
 constructors = constructors.select('constructor_id',col('name').alias('constructor_name'))
 
 # COMMAND ----------
 
-qualifying = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/qualifying')
+qualifying = spark.read.load('/mnt/saf1racing/formula-one-project/silver/qualifying')
 qualifying = qualifying.select('race_id','driver_id','constructor_id','q1','q2','q3')
 qualifying.display()
 
 # COMMAND ----------
 
-races = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/races')
+races = spark.read.load('/mnt/saf1racing/formula-one-project/silver/races')
 races = races.select('race_id','year','date')
 
 # COMMAND ----------
@@ -45,7 +45,7 @@ final_qualifying.filter((col('year')=='2024')).display()
 
 # write bbc_qualifying results in gold 
 
-final_qualifying.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/gold/bbc_qualifying_results')
+final_qualifying.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/gold/bbc_qualifying_results')
 
 
 

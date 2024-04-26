@@ -4,7 +4,7 @@
 from pyspark.sql.functions import col,explode
 
 
-qualifying_df = spark.read.json(['/mnt/saf1racing/formulaoneproject/bronze/qualifying/2024-04-14/','/mnt/saf1racing/formulaoneproject/bronze/qualifying/2024-04-15/'],multiLine='True')
+qualifying_df = spark.read.json('/mnt/saf1racing/formula-one-project/bronze/qualifying',multiLine='True',recursiveFileLookup=True)
 
 qualifying_df= qualifying_df.withColumn('lst',explode(col('MRData').RaceTable.Races))
 qualifying_df = qualifying_df.withColumn('quali_results',explode(col('lst').QualifyingResults))
@@ -85,6 +85,6 @@ qualifying_df.display()
 
 # COMMAND ----------
 
-qualifying_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/qualifying')
+qualifying_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/qualifying')
 
 

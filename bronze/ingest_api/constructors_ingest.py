@@ -2,7 +2,7 @@
 # create table constructors
 
 from pyspark.sql.functions import col,explode,replace
-constructors_df = spark.read.option("multiline", "true").json('/mnt/saf1racing/formulaoneproject/bronze/constructors',recursiveFileLookup=True)
+constructors_df = spark.read.option("multiline", "true").json('/mnt/saf1racing/formula-one-project/bronze/constructors',recursiveFileLookup=True)
 constructors_df = constructors_df.withColumn('lst', explode(col('MRData').ConstructorTable.Constructors))
 constructors_df = constructors_df.drop('MRData')
 constructors_df = constructors_df.withColumn('constructor_id', col('lst').constructorId)\
@@ -35,4 +35,4 @@ print(constructors_df.count())
 
 # COMMAND ----------
 
-constructors_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/constructors')
+constructors_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/constructors')

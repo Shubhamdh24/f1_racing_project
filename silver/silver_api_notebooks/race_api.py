@@ -1,27 +1,27 @@
 # Databricks notebook source
 from pyspark.sql.functions import col,concat_ws
-drivers = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/drivers')
+drivers = spark.read.load('/mnt/saf1racing/formula-one-project/silver/drivers')
 drivers = drivers.withColumn('full name',concat_ws(' ',col('forename'),col('surname'))).select('driver_id','full name','number')
 
 # COMMAND ----------
 
 from pyspark.sql.functions import col,concat_ws
-constructors = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/constructors')
+constructors = spark.read.load('/mnt/saf1racing/formula-one-project/silver/constructors')
 constructors = constructors.select('constructor_id',col('name').alias('constructor_name'))
 
 # COMMAND ----------
 
-results = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/results')
+results = spark.read.load('/mnt/saf1racing/formula-one-project/silver/results')
 results = results.select('race_id','driver_id','constructor_id','grid','fastest_lap_time','points')
 
 # COMMAND ----------
 
-races = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/races')
+races = spark.read.load('/mnt/saf1racing/formula-one-project/silver/races')
 races = races.filter(col('name')=='Abu Dhabi Grand Prix').select('race_id','year','date','name')
 
 # COMMAND ----------
 
-pit_stops = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/pit_stops')
+pit_stops = spark.read.load('/mnt/saf1racing/formula-one-project/silver/pit_stops')
 pit_stops = pit_stops.select('race_id','driver_id','stop')
 
 

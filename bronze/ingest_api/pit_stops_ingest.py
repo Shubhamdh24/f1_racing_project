@@ -2,7 +2,7 @@
 # create table pit_stops
 from pyspark.sql.functions import col,explode,regexp_replace
 
-pit_stops_df = spark.read.json(['/mnt/saf1racing/formulaoneproject/bronze/pit_stops/2024-04-15','/mnt/saf1racing/formulaoneproject/bronze/pit_stops/2024-04-14'],multiLine=True)
+pit_stops_df = spark.read.json('/mnt/saf1racing/formula-one-project/bronze/pit_stops',multiLine=True,recursiveFileLookup=True)
 pit_stops_df = pit_stops_df.withColumn('list',explode(col('MRData').RaceTable.Races))
 pit_stops_df = pit_stops_df.withColumn('pit_stops',explode(col('list').PitStops))
 pit_stops_df = pit_stops_df.withColumn('driver_id',col('pit_stops').driverId)\
@@ -67,7 +67,7 @@ print(pit_stops_df.count())
 # we retrieve all the columns required for our feature analysis
 # we can directly write the pit_stops delta table in silver storage account
 
-pit_stops_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/pit_stops')
+pit_stops_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/pit_stops')
 
 # COMMAND ----------
 

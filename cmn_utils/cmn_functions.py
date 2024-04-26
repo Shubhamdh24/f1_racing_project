@@ -54,17 +54,3 @@ def add_ingestion_date(data_frame):
 def write_file(data_frame,container_name,file_name):
     data_frame.write.mode('overwrite').parquet(f'/mnt/saf1racing/{container_name}/{file_name}')
     return data_frame
-
-# COMMAND ----------
-
-
-
-
-# COMMAND ----------
-
-
-
-
-# COMMAND ----------
-
-

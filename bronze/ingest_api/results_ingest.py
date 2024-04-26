@@ -3,7 +3,7 @@
 
 from pyspark.sql.functions import col,explode
 
-results_df = spark.read.json('/mnt/saf1racing/formulaoneproject/bronze/results/',recursiveFileLookup=True,multiLine=True)
+results_df = spark.read.json('/mnt/saf1racing/formula-one-project/bronze/results/',recursiveFileLookup=True,multiLine=True)
 
 
 results_df = results_df.withColumn('races',explode(col('MRData').RaceTable.Races))
@@ -75,7 +75,7 @@ print(results_df.count())
 # We can get status_id from status_df
 # as we have status column in results_df we can join results_df with status_df and retrive the status_id column 
 
-status_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/status')
+status_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/status')
 results_df = results_df.join(status_df,'status','inner')
 
 
@@ -102,4 +102,4 @@ results_df.display()
 
 # COMMAND ----------
 
-results_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/silver/results')
+results_df.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/silver/results')

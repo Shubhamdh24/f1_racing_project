@@ -1,10 +1,10 @@
 # Databricks notebook source
-results_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/results')
+results_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/results')
 driver_standings_df = results_df.select('race_id','driver_id','points','position','position_text','constructor_id')
 
 # COMMAND ----------
 
-races_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/races')
+races_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/races')
 races_df = races_df.select('race_id','year')
 
 # COMMAND ----------
@@ -29,7 +29,7 @@ bbc_driver_standing1 = bbc_driver_standing.join(driver_standings_with_year,['yea
 # COMMAND ----------
 
 from pyspark.sql.functions import concat_ws
-drivers_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/drivers')
+drivers_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/drivers')
 drivers_df = drivers_df.select('driver_id',concat_ws(' ',col('forename'),col('surname')).alias('full name'))
 drivers_df.display()
 
@@ -41,7 +41,7 @@ bbc_driver_standing1.display()
 # COMMAND ----------
 
 from pyspark.sql.functions import desc
-constructor_df = spark.read.load('/mnt/saf1racing/formulaoneproject/silver/constructors').select('constructor_id',col('name').alias('Team'))
+constructor_df = spark.read.load('/mnt/saf1racing/formula-one-project/silver/constructors').select('constructor_id',col('name').alias('Team'))
 bbc_driver_standing2 = bbc_driver_standing1.join(constructor_df,'constructor_id','inner')
 bbc_driver_standing2 = bbc_driver_standing2.select(col('full name').alias('Driver'),'Team','Wins','Points','year')
 # bbc_driver_standing2.filter(col('year')==2024).orderBy(desc(col('Points'))).display()
@@ -51,4 +51,4 @@ bbc_driver_standing2.display()
 
 # writing down the bbc driver_standings_df2 to gold
 
-bbc_driver_standing2.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formulaoneproject/gold/bbc_driver_standings')
+bbc_driver_standing2.write.option('format','delta').mode('overwrite').save('/mnt/saf1racing/formula-one-project/gold/bbc_driver_standings')
