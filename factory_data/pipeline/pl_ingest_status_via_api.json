@@ -3,9 +3,16 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "act_cpy_drivers",
+				"name": "act_cpy_status",
 				"type": "Copy",
-				"dependsOn": [],
+				"dependsOn": [
+					{
+						"activity": "act_log_insert_status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -65,11 +72,11 @@
 				]
 			},
 			{
-				"name": "act_look_up_on_seasons",
+				"name": "act_look_up_on_status",
 				"type": "Lookup",
 				"dependsOn": [
 					{
-						"activity": "act_cpy_drivers",
+						"activity": "act_log_update_completion_status",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -108,6 +115,104 @@
 								"type": "Expression"
 							}
 						}
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "act_log_insert_status",
+				"type": "Lookup",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "insert into public.audit_log (job_name,task_name,status,start_date,end_date) values ('@{pipeline().parameters.pl_param_file_name}','copy_act','In Progress','@{convertFromUtc(utcnow(),'India Standard Time')}','@{convertFromUtc(utcnow(),'India Standard Time')}');\n\nselect * from public.audit_log;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_postgres",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "act_log_update_completion_status",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "act_cpy_status",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "update public.audit_log\nset status='completed', \nend_date = start_date + interval '@{activity('act_cpy_status').output.copyDuration} seconds'\nwhere job_name = '@{pipeline().parameters.pl_param_file_name}';\n\n\nselect * from public.audit_log;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_postgres",
+						"type": "DatasetReference"
+					},
+					"firstRowOnly": false
+				}
+			},
+			{
+				"name": "act_log_update_failed_status",
+				"type": "Lookup",
+				"dependsOn": [
+					{
+						"activity": "act_cpy_status",
+						"dependencyConditions": [
+							"Failed"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzurePostgreSqlSource",
+						"query": {
+							"value": "update public.audit_log\nset status='failed', \nend_date = start_date + interval '@{activity('act_cpy_status').output.copyDuration} seconds'\nwhere job_name = '@{pipeline().parameters.pl_param_file_name}';\n\n\nselect * from public.audit_log;",
+							"type": "Expression"
+						},
+						"partitionOption": "None"
+					},
+					"dataset": {
+						"referenceName": "ds_postgres",
+						"type": "DatasetReference"
 					},
 					"firstRowOnly": false
 				}
