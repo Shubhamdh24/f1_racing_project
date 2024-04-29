@@ -33,4 +33,13 @@ dbutils.fs.mounts()
 
 # COMMAND ----------
 
+# create_mnt_point("saf1racing", "test")
+
+# COMMAND ----------
+
+# df = spark.read.parquet('/mnt/saf1racing/test/*.csv',multiline=True)
+# df.display()
+
+# COMMAND ----------
+
 
