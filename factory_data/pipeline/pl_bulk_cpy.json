@@ -17,7 +17,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select * from dbo.watermark;",
+						"sqlReaderQuery": {
+							"value": "select * from dbo.watermark where table_name = '@{pipeline().parameters.table_name}';\n\n",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -25,7 +28,7 @@
 						"referenceName": "AzureSqlTable1",
 						"type": "DatasetReference"
 					},
-					"firstRowOnly": true
+					"firstRowOnly": false
 				}
 			},
 			{
@@ -57,7 +60,7 @@
 					"source": {
 						"type": "AzureSqlSource",
 						"sqlReaderQuery": {
-							"value": "select * from dbo.student_info where id > @{activity('Lookup_watermark_lpv').output.firstRow.lpv}\n",
+							"value": "select * from @{concat('dbo.',pipeline().parameters.table_name)}  where id > @{activity('Lookup_watermark_lpv').output.value[0].lpv}\n",
 							"type": "Expression"
 						},
 						"queryTimeout": "02:00:00",
@@ -65,7 +68,13 @@
 					},
 					"sink": {
 						"type": "AzureSqlSink",
-						"writeBehavior": "insert",
+						"writeBehavior": "upsert",
+						"upsertSettings": {
+							"useTempDB": true,
+							"keys": [
+								"student_id"
+							]
+						},
 						"sqlWriterUseTableLock": false,
 						"disableMetricsCollection": false
 					},
@@ -145,7 +154,10 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "select max(id) as mx from dbo.student_info;",
+						"sqlReaderQuery": {
+							"value": "select max(id) as mx from @{concat('dbo.',pipeline().parameters.table_name)};\n",
+							"type": "Expression"
+						},
 						"queryTimeout": "02:00:00",
 						"partitionOption": "None"
 					},
@@ -184,6 +196,13 @@
 								"type": "Expression"
 							},
 							"type": "Int32"
+						},
+						"table_name": {
+							"value": {
+								"value": "@pipeline().parameters.table_name",
+								"type": "Expression"
+							},
+							"type": "String"
 						}
 					}
 				},
@@ -193,6 +212,12 @@
 				}
 			}
 		],
+		"parameters": {
+			"table_name": {
+				"type": "string",
+				"defaultValue": "student_info"
+			}
+		},
 		"variables": {
 			"v": {
 				"type": "String"
